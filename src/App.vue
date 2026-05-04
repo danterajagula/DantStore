@@ -2,6 +2,7 @@
 import Sidebar from './components/BAR.vue'
 import Navbar from './components/NAVBAR.vue'
 import BigCard from './components/BIGCARD.vue'
+import Category from './components/Category.vue'
 </script>
 
 <template>
@@ -11,6 +12,7 @@ import BigCard from './components/BIGCARD.vue'
       <Navbar />
       <div class="main-content">
         <BigCard />
+        <Category />
       </div>
     </div>
   </div>
@@ -37,7 +39,8 @@ import BigCard from './components/BIGCARD.vue'
   overflow-y: auto;
   background: linear-gradient(135deg, #ffffff 0%, #f9fbfd 100%);
   display: flex;
+  flex-direction: column;
+  gap: 30px;
   align-items: center;
-  justify-content: center;
 }
 </style>
