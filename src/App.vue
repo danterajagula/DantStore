@@ -4,6 +4,7 @@ import Navbar from './components/NAVBAR.vue'
 import BigCard from './components/BIGCARD.vue'
 import Category from './components/Category.vue'
 import Wishlist from './components/Wishlist.vue'
+import Cart from './components/cart.vue'
 import { store } from './store.js'
 </script>
 
@@ -22,6 +23,11 @@ import { store } from './store.js'
         <!-- Wishlist Page -->
         <template v-else-if="store.currentPage === 'wishlist'">
           <Wishlist />
+        </template>
+
+        <!-- Cart Page -->
+        <template v-else-if="store.currentPage === 'cart'">
+          <Cart />
         </template>
       </div>
     </div>

@@ -41,7 +41,7 @@
           <p class="product-price">PRICE {{ product.price }}</p>
           <div class="product-rating">
             <span class="rating-stars">★ {{ product.rating }}</span>
-            <button class="add-btn">+</button>
+            <button class="add-btn" @click="addToCart(product)" title="Add to cart">+</button>
           </div>
         </div>
       </div>
@@ -131,6 +131,15 @@ export default {
           dateAdded: new Date().toISOString()
         })
       }
+    },
+    addToCart(product) {
+      this.store.addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        rating: product.rating,
+        image: product.image
+      })
     }
   }
 }

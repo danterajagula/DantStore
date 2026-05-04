@@ -31,29 +31,44 @@
 
       <!-- Quantity Selector -->
       <div class="quantity-section">
-        <button class="qty-btn minus">−</button>
-        <div class="qty-display">0</div>
-        <button class="qty-btn plus">+</button>
+        <button class="qty-btn minus" @click="decrementQuantity">−</button>
+        <div class="qty-display">{{ quantity }}</div>
+        <button class="qty-btn plus" @click="incrementQuantity">+</button>
       </div>
 
       <!-- Action Buttons -->
       <div class="actions-section">
-        <button class="wishlist-btn">
-          <span>♡</span>
+        <button 
+          :class="['wishlist-btn', { active: store.isInWishlist(bigcardProduct.id) }]"
+          @click="toggleWishlist"
+          :title="store.isInWishlist(bigcardProduct.id) ? 'Remove from wishlist' : 'Add to wishlist'"
+        >
+          {{ store.isInWishlist(bigcardProduct.id) ? '♥' : '♡' }}
         </button>
-        <button class="add-to-cart-btn">Add to cart</button>
-        <button class="buy-now-btn">Buy now</button>
+        <button class="add-to-cart-btn" @click="addToCart">Add to cart</button>
+        <button class="buy-now-btn" @click="buyNow">Buy now</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { store } from '../store.js'
+
 export default {
   name: 'BigCard',
   data() {
     return {
-      quantity: 0
+      store,
+      quantity: 1,
+      bigcardProduct: {
+        id: 'bigcard-001',
+        name: 'PUMA x LAMELO BALL | PUMA',
+        price: '$150',
+        rating: 4.8,
+        image: 'https://via.placeholder.com/300x300?text=PUMA+Basketball+Shoes',
+        description: 'PUMA x LAMELO BALL MB.03 LaFrance Men\'s Basketball Shoes, Fluro Green Pes-PUMA Green-Fluro Yellow Pes, extralarge'
+      }
     }
   },
   methods: {
@@ -66,13 +81,34 @@ export default {
       }
     },
     toggleWishlist() {
-      // Handle wishlist toggle
+      if (this.store.isInWishlist(this.bigcardProduct.id)) {
+        this.store.removeFromWishlist(this.bigcardProduct.id)
+      } else {
+        this.store.addToWishlist({
+          id: this.bigcardProduct.id,
+          name: this.bigcardProduct.name,
+          price: this.bigcardProduct.price,
+          rating: this.bigcardProduct.rating,
+          image: this.bigcardProduct.image,
+          dateAdded: new Date().toISOString()
+        })
+      }
     },
     addToCart() {
-      // Handle add to cart
+      for (let i = 0; i < this.quantity; i++) {
+        this.store.addToCart({
+          id: this.bigcardProduct.id,
+          name: this.bigcardProduct.name,
+          price: this.bigcardProduct.price,
+          rating: this.bigcardProduct.rating,
+          image: this.bigcardProduct.image
+        })
+      }
+      this.quantity = 1
     },
     buyNow() {
-      // Handle buy now
+      this.addToCart()
+      this.store.setPage('cart')
     }
   }
 }
@@ -262,6 +298,12 @@ export default {
 .wishlist-btn:hover {
   background-color: #f0fffe;
   transform: scale(1.05);
+}
+
+.wishlist-btn.active {
+  background-color: #ffe0e0;
+  color: #ff6b6b;
+  border-color: #ff6b6b;
 }
 
 .add-to-cart-btn {
