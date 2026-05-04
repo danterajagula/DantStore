@@ -4,19 +4,35 @@
       <h3 class="category-title">Shop by Category</h3>
     </div>
     <div class="category-grid">
-      <div class="category-item">
+      <div 
+        class="category-item"
+        :class="{ active: selectedCategory === 'Speedcats' }"
+        @click="selectedCategory = 'Speedcats'"
+      >
         <div class="category-label">Speedcats</div>
         <img src="https://via.placeholder.com/200x150?text=Speedcats" alt="Speedcats">
       </div>
-      <div class="category-item">
+      <div 
+        class="category-item"
+        :class="{ active: selectedCategory === 'Pokemon' }"
+        @click="selectedCategory = 'Pokemon'"
+      >
         <div class="category-label">Pokemon</div>
         <img src="https://via.placeholder.com/200x150?text=Pokemon" alt="Pokemon">
       </div>
-      <div class="category-item">
+      <div 
+        class="category-item"
+        :class="{ active: selectedCategory === 'Suede' }"
+        @click="selectedCategory = 'Suede'"
+      >
         <div class="category-label">Suede</div>
         <img src="https://via.placeholder.com/200x150?text=Suede" alt="Suede">
       </div>
-      <div class="category-item">
+      <div 
+        class="category-item"
+        :class="{ active: selectedCategory === 'Lamello Ball' }"
+        @click="selectedCategory = 'Lamello Ball'"
+      >
         <div class="category-label">Lamello Ball</div>
         <img src="https://via.placeholder.com/200x150?text=Lamello+Ball" alt="Lamello Ball">
       </div>
@@ -26,7 +42,7 @@
     <div class="products-section">
       <h3 class="products-title">Featured Products</h3>
       <div class="products-grid">
-        <div class="product-card" v-for="product in products" :key="product.id">
+        <div class="product-card" v-for="product in filteredProducts" :key="product.id">
           <div class="product-img">
             <img :src="product.image" :alt="product.name">
             <button 
@@ -57,64 +73,78 @@ export default {
   data() {
     return {
       store,
+      selectedCategory: 'Speedcats',
       products: [
         {
           id: 1,
           name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
           price: '$182',
           rating: 4.8,
-          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo',
+          category: 'Speedcats'
         },
         {
           id: 2,
           name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
           price: '$182',
           rating: 4.8,
-          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo',
+          category: 'Speedcats'
         },
         {
           id: 3,
           name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
           price: '$182',
           rating: 4.8,
-          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo',
+          category: 'Pokemon'
         },
         {
           id: 4,
           name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
           price: '$182',
           rating: 4.8,
-          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo',
+          category: 'Pokemon'
         },
         {
           id: 5,
           name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
           price: '$182',
           rating: 4.8,
-          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo',
+          category: 'Suede'
         },
         {
           id: 6,
           name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
           price: '$182',
           rating: 4.8,
-          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo',
+          category: 'Suede'
         },
         {
           id: 7,
           name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
           price: '$182',
           rating: 4.8,
-          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo',
+          category: 'Lamello Ball'
         },
         {
           id: 8,
           name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
           price: '$182',
           rating: 4.8,
-          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo',
+          category: 'Lamello Ball'
         }
       ]
+    }
+  },
+  computed: {
+    filteredProducts() {
+      return this.products.filter(product => product.category === this.selectedCategory)
     }
   },
   methods: {
@@ -178,11 +208,18 @@ export default {
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
+  border: 3px solid transparent;
 }
 
 .category-item:hover {
   transform: translateY(-5px);
+}
+
+.category-item.active {
+  transform: scale(1.05);
+  border-color: #5dd9d1;
+  box-shadow: 0 4px 16px rgba(93, 217, 209, 0.3);
 }
 
 .category-item img {
@@ -219,17 +256,17 @@ export default {
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
   width: 100%;
 }
 
 .product-card {
   background: white;
   border-radius: 12px;
-  padding: 12px;
+  padding: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: box-shadow 0.3s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
 }
 
@@ -240,8 +277,8 @@ export default {
 .product-img {
   position: relative;
   width: 100%;
-  height: 150px;
-  margin-bottom: 12px;
+  height: 200px;
+  margin-bottom: 16px;
   border-radius: 8px;
   overflow: hidden;
   background: #f5f5f5;
@@ -335,6 +372,12 @@ export default {
 .add-btn:hover {
   background: #00bfa5;
   transform: scale(1.1);
+}
+
+@media (max-width: 1024px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
