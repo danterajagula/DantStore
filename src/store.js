@@ -1,12 +1,18 @@
 import { reactive } from 'vue'
 
 export const store = reactive({
-  currentPage: 'home', // 'home', 'wishlist', or 'cart'
+  currentPage: 'home', // 'home', 'wishlist', 'cart', or 'detail'
+  selectedProduct: null,
   wishlistItems: [],
   cartItems: [],
   
   setPage(page) {
     this.currentPage = page
+  },
+  
+  setSelectedProduct(product) {
+    this.selectedProduct = product
+    this.currentPage = 'detail'
   },
   
   // Wishlist methods

@@ -42,7 +42,7 @@
     <div class="products-section">
       <h3 class="products-title">Featured Products</h3>
       <div class="products-grid">
-        <div class="product-card" v-for="product in filteredProducts" :key="product.id">
+        <div class="product-card" v-for="product in filteredProducts" :key="product.id" @click="viewProductDetail(product)">
           <div class="product-img">
             <img :src="product.image" :alt="product.name">
             <button 
@@ -170,6 +170,9 @@ export default {
         rating: product.rating,
         image: product.image
       })
+    },
+    viewProductDetail(product) {
+      this.store.setSelectedProduct(product)
     }
   }
 }

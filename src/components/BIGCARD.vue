@@ -107,8 +107,7 @@ export default {
       this.quantity = 1
     },
     buyNow() {
-      this.addToCart()
-      this.store.setPage('cart')
+      this.store.setSelectedProduct(this.bigcardProduct)
     }
   }
 }
