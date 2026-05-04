@@ -3,6 +3,8 @@ import Sidebar from './components/BAR.vue'
 import Navbar from './components/NAVBAR.vue'
 import BigCard from './components/BIGCARD.vue'
 import Category from './components/Category.vue'
+import Wishlist from './components/Wishlist.vue'
+import { store } from './store.js'
 </script>
 
 <template>
@@ -11,8 +13,16 @@ import Category from './components/Category.vue'
     <div class="main-wrapper">
       <Navbar />
       <div class="main-content">
-        <BigCard />
-        <Category />
+        <!-- Home Page -->
+        <template v-if="store.currentPage === 'home'">
+          <BigCard />
+          <Category />
+        </template>
+        
+        <!-- Wishlist Page -->
+        <template v-else-if="store.currentPage === 'wishlist'">
+          <Wishlist />
+        </template>
       </div>
     </div>
   </div>

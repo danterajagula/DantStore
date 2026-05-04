@@ -26,15 +26,21 @@
     <div class="products-section">
       <h3 class="products-title">Featured Products</h3>
       <div class="products-grid">
-        <div class="product-card" v-for="i in 8" :key="i">
+        <div class="product-card" v-for="product in products" :key="product.id">
           <div class="product-img">
-            <img src="https://via.placeholder.com/150x150?text=PUMA+LaMelo" alt="Product">
-            <button class="wishlist-heart">♡</button>
+            <img :src="product.image" :alt="product.name">
+            <button 
+              :class="['wishlist-heart', { active: store.isInWishlist(product.id) }]"
+              @click.stop="toggleWishlist(product)"
+              :title="store.isInWishlist(product.id) ? 'Remove from wishlist' : 'Add to wishlist'"
+            >
+              {{ store.isInWishlist(product.id) ? '♥' : '♡' }}
+            </button>
           </div>
-          <h4 class="product-name">PUMA LaMelo Ball MB.04 Lo 'LaFrance'</h4>
-          <p class="product-price">PRICE $182</p>
+          <h4 class="product-name">{{ product.name }}</h4>
+          <p class="product-price">PRICE {{ product.price }}</p>
           <div class="product-rating">
-            <span class="rating-stars">★ 4.8</span>
+            <span class="rating-stars">★ {{ product.rating }}</span>
             <button class="add-btn">+</button>
           </div>
         </div>
@@ -44,8 +50,89 @@
 </template>
 
 <script>
+import { store } from '../store.js'
+
 export default {
-  name: 'Category'
+  name: 'Category',
+  data() {
+    return {
+      store,
+      products: [
+        {
+          id: 1,
+          name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
+          price: '$182',
+          rating: 4.8,
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+        },
+        {
+          id: 2,
+          name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
+          price: '$182',
+          rating: 4.8,
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+        },
+        {
+          id: 3,
+          name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
+          price: '$182',
+          rating: 4.8,
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+        },
+        {
+          id: 4,
+          name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
+          price: '$182',
+          rating: 4.8,
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+        },
+        {
+          id: 5,
+          name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
+          price: '$182',
+          rating: 4.8,
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+        },
+        {
+          id: 6,
+          name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
+          price: '$182',
+          rating: 4.8,
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+        },
+        {
+          id: 7,
+          name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
+          price: '$182',
+          rating: 4.8,
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+        },
+        {
+          id: 8,
+          name: "PUMA LaMelo Ball MB.04 Lo 'LaFrance'",
+          price: '$182',
+          rating: 4.8,
+          image: 'https://via.placeholder.com/150x150?text=PUMA+LaMelo'
+        }
+      ]
+    }
+  },
+  methods: {
+    toggleWishlist(product) {
+      if (this.store.isInWishlist(product.id)) {
+        this.store.removeFromWishlist(product.id)
+      } else {
+        this.store.addToWishlist({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          rating: product.rating,
+          image: product.image,
+          dateAdded: new Date().toISOString()
+        })
+      }
+    }
+  }
 }
 </script>
 
@@ -174,11 +261,18 @@ export default {
   justify-content: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  color: #666;
 }
 
 .wishlist-heart:hover {
   color: #ff6b6b;
   transform: scale(1.1);
+  background: #fff5f5;
+}
+
+.wishlist-heart.active {
+  color: #ff6b6b;
+  background: #ffe0e0;
 }
 
 .product-name {
