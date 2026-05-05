@@ -6,7 +6,7 @@
           <div class="spinner-check">✓</div>
         </div>
       </div>
-      <h2 class="loading-title">Preparing your plan</h2>
+      <h2 class="loading-title">Wait a Minute...</h2>
       <p class="loading-subtitle">Setting up your order and analyzing your goals...</p>
       <div class="loading-dots">
         <span class="dot" :style="{ animationDelay: '0s' }"></span>
@@ -30,7 +30,7 @@ export default {
   mounted() {
     // Simulate loading and redirect after 3 seconds
     setTimeout(() => {
-      this.store.setPage('home')
+      this.store.setPage('success')
     }, 3000)
   }
 }

@@ -387,13 +387,11 @@ export default {
         return
       }
 
+      // Store the selected payment method
+      this.store.selectedPaymentMethod = this.selectedPaymentMethod
+
       // Show loading page
       this.store.setPage('loading')
-      
-      // Clear cart after a delay
-      setTimeout(() => {
-        this.store.cartItems = []
-      }, 3000)
     },
     isFormValid() {
       return (

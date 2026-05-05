@@ -1,10 +1,11 @@
 import { reactive } from 'vue'
 
 export const store = reactive({
-  currentPage: 'home', // 'home', 'wishlist', 'cart', 'payment', 'loading', or 'detail'
+  currentPage: 'home', // 'home', 'wishlist', 'cart', 'payment', 'loading', 'success', or 'detail'
   selectedProduct: null,
   wishlistItems: [],
   cartItems: [],
+  selectedPaymentMethod: null,
   
   setPage(page) {
     this.currentPage = page

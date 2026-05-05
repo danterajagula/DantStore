@@ -7,6 +7,7 @@ import Wishlist from './components/Wishlist.vue'
 import Cart from './components/cart.vue'
 import Payment from './components/payment.vue'
 import Loading from './components/loading.vue'
+import Success from './components/success.vue'
 import DetailItem from './components/detail_item.vue'
 import { store } from './store.js'
 </script>
@@ -41,6 +42,11 @@ import { store } from './store.js'
         <!-- Loading Page -->
         <template v-else-if="store.currentPage === 'loading'">
           <Loading />
+        </template>
+
+        <!-- Success Page -->
+        <template v-else-if="store.currentPage === 'success'">
+          <Success />
         </template>
 
         <!-- Product Detail Page -->
