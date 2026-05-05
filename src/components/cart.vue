@@ -89,7 +89,7 @@
     <!-- Cart Actions -->
     <div class="cart-actions">
       <button class="back-btn" @click="goHome">Back</button>
-      <button v-if="store.cartItems.length > 0" class="checkout-btn">Check Out</button>
+      <button v-if="store.cartItems.length > 0" class="checkout-btn" @click="checkout">Check Out</button>
     </div>
   </div>
 </template>
@@ -131,6 +131,9 @@ export default {
     },
     goHome() {
       this.store.setPage('home')
+    },
+    checkout() {
+      this.store.setPage('payment')
     }
   }
 }

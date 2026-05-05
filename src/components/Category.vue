@@ -213,6 +213,8 @@ export default {
   cursor: pointer;
   transition: all 0.3s ease;
   border: 3px solid transparent;
+  outline: 2px solid #e0e0e0;
+  outline-offset: -2px;
 }
 
 .category-item:hover {
