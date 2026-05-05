@@ -26,7 +26,20 @@
               >
               <label :for="`payment-${method.id}`" class="payment-label">{{ method.name }}</label>
             </div>
-            <div class="payment-card-icon">{{ method.icon }}</div>
+            <div class="payment-card-image-area">
+              <img v-if="method.customImage" :src="method.customImage" :alt="method.name" class="payment-card-image">
+              <div v-else class="payment-card-icon">{{ method.icon }}</div>
+              <label :for="`upload-${method.id}`" class="upload-btn" title="Upload custom image">
+                📷
+              </label>
+              <input
+                :id="`upload-${method.id}`"
+                type="file"
+                accept="image/*"
+                @change="handleImageUpload($event, method.id)"
+                style="display: none"
+              >
+            </div>
             <p class="payment-description">{{ method.description }}</p>
           </div>
         </div>
@@ -121,7 +134,9 @@
               >
                 <option value="">Select city</option>
                 <option value="Jakarta">Jakarta</option>
-                <option value="Bandung">Bandung</option>
+
+                
+                <option value="Yogyakarta">Yogyakarta</option>
                 <option value="Surabaya">Surabaya</option>
                 <option value="Other">Other</option>
               </select>
@@ -291,6 +306,19 @@ export default {
         this.deliveryForm.postalCode.trim() !== '' &&
         this.deliveryForm.phone.trim() !== ''
       )
+    },
+    handleImageUpload(event, methodId) {
+      const file = event.target.files[0]
+      if (file) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const method = this.paymentMethods.find(m => m.id === methodId)
+          if (method) {
+            method.customImage = e.target.result
+          }
+        }
+        reader.readAsDataURL(file)
+      }
     }
   }
 }
@@ -386,9 +414,47 @@ export default {
   margin: 0;
 }
 
+.payment-card-image-area {
+  position: relative;
+  height: 80px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payment-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
 .payment-card-icon {
   font-size: 32px;
   margin-bottom: 10px;
+}
+
+.upload-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  background: #5dd9d1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.upload-btn:hover {
+  background: #00bfa5;
+  transform: scale(1.1);
 }
 
 .payment-description {
