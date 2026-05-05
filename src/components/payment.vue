@@ -42,7 +42,13 @@
           </div>
           <div class="modal-body">
             <div v-if="selectedPaymentMethodData.id === 'ewallet'" class="payment-options">
-              <div v-for="option in ewalletOptions" :key="option.id" class="payment-option" @click="selectPaymentOption(option)">
+              <div v-for="option in ewalletOptions" :key="option.id" class="payment-option" @click="selectPaymentOption(option, 'ewallet')">
+                <div class="option-icon">{{ option.icon }}</div>
+                <div class="option-name">{{ option.name }}</div>
+              </div>
+            </div>
+            <div v-else-if="selectedPaymentMethodData.id === 'bank-transfer'" class="payment-options">
+              <div v-for="option in bankOptions" :key="option.id" class="payment-option" @click="selectPaymentOption(option, 'bank')">
                 <div class="option-icon">{{ option.icon }}</div>
                 <div class="option-name">{{ option.name }}</div>
               </div>
@@ -251,27 +257,40 @@ export default {
   data() {
     return {
       store,
-      selectedPaymentMethod: 'credit-card',
+      selectedPaymentMethod: 'bank-transfer',
       showPaymentMenu: false,
       selectedEwalletOption: null,
+      selectedBankOption: null,
       paymentMethods: [
         {
-          id: 'credit-card',
-          name: 'Credit Card',
-          icon: '💳',
-          description: 'Visa, Mastercard, or Amex'
-        },
-        {
-          id: 'debit-card',
-          name: 'Debit Card',
+          id: 'bank-transfer',
+          name: 'Bank Transfer',
           icon: '🏦',
-          description: 'Direct bank transfer'
+          description: 'BCA, Mandiri, BNI'
         },
         {
           id: 'ewallet',
           name: 'E-Wallet',
           icon: '📱',
           description: 'GoPay, Dana, OVO'
+        }
+      ],
+      // Bank payment options - Easy to customize icons here
+      bankOptions: [
+        {
+          id: 'bca',
+          name: 'BCA',
+          icon: '🔵' // Change this icon to your custom icon
+        },
+        {
+          id: 'mandiri',
+          name: 'Mandiri',
+          icon: '🔴' // Change this icon to your custom icon
+        },
+        {
+          id: 'bni',
+          name: 'BNI',
+          icon: '🟡' // Change this icon to your custom icon
         }
       ],
       // E-wallet payment options - Easy to customize icons here
@@ -317,17 +336,24 @@ export default {
       this.selectedPaymentMethod = methodId
       this.showPaymentMenu = true
       this.selectedEwalletOption = null
+      this.selectedBankOption = null
     },
     closePaymentMenu() {
       this.showPaymentMenu = false
       this.selectedEwalletOption = null
+      this.selectedBankOption = null
     },
-    selectPaymentOption(option) {
-      this.selectedEwalletOption = option
+    selectPaymentOption(option, type) {
+      if (type === 'ewallet') {
+        this.selectedEwalletOption = option
+      } else if (type === 'bank') {
+        this.selectedBankOption = option
+      }
     },
     confirmPaymentSelection() {
       this.showPaymentMenu = false
-      alert(`Payment method selected: ${this.selectedPaymentMethodData.name}${this.selectedEwalletOption ? ' - ' + this.selectedEwalletOption.name : ''}`)
+      const selectedOption = this.selectedEwalletOption || this.selectedBankOption
+      alert(`Payment method selected: ${this.selectedPaymentMethodData.name}${selectedOption ? ' - ' + selectedOption.name : ''}`)
     },
     completePayment() {
       // Validate form
