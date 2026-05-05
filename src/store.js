@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 
 export const store = reactive({
-  currentPage: 'home', // 'home', 'wishlist', 'cart', 'payment', or 'detail'
+  currentPage: 'home', // 'home', 'wishlist', 'cart', 'payment', 'loading', or 'detail'
   selectedProduct: null,
   wishlistItems: [],
   cartItems: [],

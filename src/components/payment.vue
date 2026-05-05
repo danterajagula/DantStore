@@ -381,14 +381,19 @@ export default {
         return
       }
 
-      // Process payment
-      alert(`Payment of $${(this.getSubtotal() * 1.1).toFixed(2)} completed successfully!\nOrder will be delivered to: ${this.deliveryForm.address}`)
+      // Validate payment method selected
+      if (!this.selectedPaymentOption) {
+        alert('Please select a payment method')
+        return
+      }
+
+      // Show loading page
+      this.store.setPage('loading')
       
-      // Clear cart
-      this.store.cartItems = []
-      
-      // Go back home
-      this.store.setPage('home')
+      // Clear cart after a delay
+      setTimeout(() => {
+        this.store.cartItems = []
+      }, 3000)
     },
     isFormValid() {
       return (
