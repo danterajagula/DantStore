@@ -15,7 +15,7 @@
             :key="method.id"
             class="payment-card"
             :class="{ active: selectedPaymentMethod === method.id }"
-            @click="selectedPaymentMethod = method.id"
+            @click="openPaymentMenu(method.id)"
           >
             <div class="payment-card-header">
               <input
@@ -23,24 +23,39 @@
                 :value="method.id"
                 v-model="selectedPaymentMethod"
                 :id="`payment-${method.id}`"
+                @click.stop
               >
               <label :for="`payment-${method.id}`" class="payment-label">{{ method.name }}</label>
             </div>
-            <div class="payment-card-image-area">
-              <img v-if="method.customImage" :src="method.customImage" :alt="method.name" class="payment-card-image">
-              <div v-else class="payment-card-icon">{{ method.icon }}</div>
-              <label :for="`upload-${method.id}`" class="upload-btn" title="Upload custom image">
-                📷
-              </label>
-              <input
-                :id="`upload-${method.id}`"
-                type="file"
-                accept="image/*"
-                @change="handleImageUpload($event, method.id)"
-                style="display: none"
-              >
-            </div>
+            <div class="payment-card-icon">{{ method.icon }}</div>
             <p class="payment-description">{{ method.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Menu Overlay -->
+      <div v-if="showPaymentMenu" class="payment-overlay" @click="closePaymentMenu">
+        <div class="payment-modal" @click.stop>
+          <div class="modal-header">
+            <h3>{{ selectedPaymentMethodData.name }}</h3>
+            <button class="close-btn" @click="closePaymentMenu">✕</button>
+          </div>
+          <div class="modal-body">
+            <div v-if="selectedPaymentMethodData.id === 'ewallet'" class="payment-options">
+              <div v-for="option in ewalletOptions" :key="option.id" class="payment-option" @click="selectPaymentOption(option)">
+                <div class="option-icon">{{ option.icon }}</div>
+                <div class="option-name">{{ option.name }}</div>
+              </div>
+            </div>
+            <div v-else class="payment-options">
+              <div class="payment-option selected">
+                <div class="option-icon">{{ selectedPaymentMethodData.icon }}</div>
+                <div class="option-name">{{ selectedPaymentMethodData.name }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="confirm-btn" @click="confirmPaymentSelection">Confirm</button>
           </div>
         </div>
       </div>
@@ -135,7 +150,7 @@
                 <option value="">Select city</option>
                 <option value="Jakarta">Jakarta</option>
 
-                
+
                 <option value="Yogyakarta">Yogyakarta</option>
                 <option value="Surabaya">Surabaya</option>
                 <option value="Other">Other</option>
@@ -237,6 +252,8 @@ export default {
     return {
       store,
       selectedPaymentMethod: 'credit-card',
+      showPaymentMenu: false,
+      selectedEwalletOption: null,
       paymentMethods: [
         {
           id: 'credit-card',
@@ -254,7 +271,25 @@ export default {
           id: 'ewallet',
           name: 'E-Wallet',
           icon: '📱',
-          description: 'GCash, PayMaya, or similar'
+          description: 'GoPay, Dana, OVO'
+        }
+      ],
+      // E-wallet payment options - Easy to customize icons here
+      ewalletOptions: [
+        {
+          id: 'gopay',
+          name: 'GoPay',
+          icon: '🔵' // Change this icon to your custom icon
+        },
+        {
+          id: 'dana',
+          name: 'Dana',
+          icon: '🔴' // Change this icon to your custom icon
+        },
+        {
+          id: 'ovo',
+          name: 'OVO',
+          icon: '🟣' // Change this icon to your custom icon
         }
       ],
       deliveryForm: {
@@ -277,6 +312,22 @@ export default {
     },
     goBack() {
       this.store.setPage('cart')
+    },
+    openPaymentMenu(methodId) {
+      this.selectedPaymentMethod = methodId
+      this.showPaymentMenu = true
+      this.selectedEwalletOption = null
+    },
+    closePaymentMenu() {
+      this.showPaymentMenu = false
+      this.selectedEwalletOption = null
+    },
+    selectPaymentOption(option) {
+      this.selectedEwalletOption = option
+    },
+    confirmPaymentSelection() {
+      this.showPaymentMenu = false
+      alert(`Payment method selected: ${this.selectedPaymentMethodData.name}${this.selectedEwalletOption ? ' - ' + this.selectedEwalletOption.name : ''}`)
     },
     completePayment() {
       // Validate form
@@ -306,19 +357,11 @@ export default {
         this.deliveryForm.postalCode.trim() !== '' &&
         this.deliveryForm.phone.trim() !== ''
       )
-    },
-    handleImageUpload(event, methodId) {
-      const file = event.target.files[0]
-      if (file) {
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          const method = this.paymentMethods.find(m => m.id === methodId)
-          if (method) {
-            method.customImage = e.target.result
-          }
-        }
-        reader.readAsDataURL(file)
-      }
+    }
+  },
+  computed: {
+    selectedPaymentMethodData() {
+      return this.paymentMethods.find(m => m.id === this.selectedPaymentMethod) || {}
     }
   }
 }
@@ -414,22 +457,6 @@ export default {
   margin: 0;
 }
 
-.payment-card-image-area {
-  position: relative;
-  height: 80px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.payment-card-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 8px;
-}
-
 .payment-card-icon {
   font-size: 32px;
   margin-bottom: 10px;
@@ -455,6 +482,128 @@ export default {
 .upload-btn:hover {
   background: #00bfa5;
   transform: scale(1.1);
+}
+
+/* Payment Menu Overlay */
+.payment-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.payment-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 500px;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f9f9f9;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #1a1a1a;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+  color: #1a1a1a;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.payment-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 16px;
+}
+
+.payment-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.payment-option:hover {
+  border-color: #5dd9d1;
+  background: #f0fffe;
+  transform: translateY(-2px);
+}
+
+.payment-option.selected {
+  border-color: #5dd9d1;
+  background: #f0fffe;
+}
+
+.option-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.option-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-align: center;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+  background: #f9f9f9;
+}
+
+.confirm-btn {
+  padding: 10px 24px;
+  background: #5dd9d1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.confirm-btn:hover {
+  background: #00bfa5;
+  transform: translateY(-2px);
 }
 
 .payment-description {
