@@ -66,6 +66,19 @@
         </div>
       </div>
 
+      <!-- Selected Payment Display -->
+      <div v-if="selectedPaymentOption" class="selected-payment-section">
+        <h3 class="selected-title">Selected Payment Method</h3>
+        <div class="selected-payment-card">
+          <div class="selected-payment-icon">{{ selectedPaymentOption.icon }}</div>
+          <div class="selected-payment-info">
+            <div class="selected-payment-type">{{ selectedPaymentMethodData.name }}</div>
+            <div class="selected-payment-name">{{ selectedPaymentOption.name }}</div>
+          </div>
+          <button class="change-btn" @click="changePayment">Change</button>
+        </div>
+      </div>
+
       <!-- Delivery Form Section -->
       <div class="delivery-form-section">
         <h2 class="section-title">Delivery Information</h2>
@@ -261,6 +274,7 @@ export default {
       showPaymentMenu: false,
       selectedEwalletOption: null,
       selectedBankOption: null,
+      selectedPaymentOption: null,
       paymentMethods: [
         {
           id: 'bank-transfer',
@@ -351,9 +365,14 @@ export default {
       }
     },
     confirmPaymentSelection() {
-      this.showPaymentMenu = false
       const selectedOption = this.selectedEwalletOption || this.selectedBankOption
-      alert(`Payment method selected: ${this.selectedPaymentMethodData.name}${selectedOption ? ' - ' + selectedOption.name : ''}`)
+      if (selectedOption) {
+        this.selectedPaymentOption = selectedOption
+      }
+      this.showPaymentMenu = false
+    },
+    changePayment() {
+      this.openPaymentMenu(this.selectedPaymentMethod)
     },
     completePayment() {
       // Validate form
@@ -439,6 +458,76 @@ export default {
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   width: 100%;
+}
+
+/* Selected Payment Section */
+.selected-payment-section {
+  width: 100%;
+  padding: 24px;
+  background: linear-gradient(135deg, #f0fffe 0%, #e8fffe 100%);
+  border-radius: 12px;
+  border: 2px solid #5dd9d1;
+}
+
+.selected-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.selected-payment-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(93, 217, 209, 0.15);
+}
+
+.selected-payment-icon {
+  font-size: 40px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.selected-payment-info {
+  flex: 1;
+}
+
+.selected-payment-type {
+  font-size: 12px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.selected-payment-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.change-btn {
+  padding: 8px 16px;
+  background: #5dd9d1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.change-btn:hover {
+  background: #00bfa5;
+  transform: translateY(-2px);
 }
 
 .payment-card {
